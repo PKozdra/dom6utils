@@ -43,7 +43,7 @@ import dom6utils.CSVWriter.SSType;
 public class MonsterStatIndexer extends AbstractStatIndexer {
 	public static String[] unit_columns = {"id", "name", "wpn1", "wpn2", "wpn3", "wpn4", "wpn5", "wpn6", "wpn7", "armor1", "armor2", "armor3", "armor4", 
 			"rt", "reclimit", "basecost", "rcost", "size", "ressize", "hp", "prot", "mr", "mor", "str", "att", "def", "prec", "enc", 
-			"mapmove", "ap", "ambidextrous", "mounted", "mountmnr", "skilledrider", "reinvigoration", "leader", "undeadleader", "magicleader", "startage", "maxage", "hand", "bow", "head", 
+			"mapmove", "ap", "ambidextrous", "mounted", "mountmnr", "mountgoldcost", "skilledrider", "reinvigoration", "leader", "leaderbonus", "undeadleader", "magicleader", "startage", "maxage", "hand", "bow", "head", 
 			"body", "foot", "misc", "crownonly", "pathcost", "startdom", "bonusspells", "F", "A", "W", "E", "S", "D", "N", "G", "B", "H", "rand1", "nbr1", "link1", "mask1", "rand2", 
 			"nbr2", "link2", "mask2", "rand3", "nbr3", "link3", "mask3", "rand4", "nbr4", "link4", "mask4", "holy", "inquisitor", "mind", "inanimate", 
 			"undead", "demon", "magicbeing", "stonebeing", "animal", "coldblood", "female", "forestsurvival", "mountainsurvival", "wastesurvival", 
@@ -91,7 +91,9 @@ public class MonsterStatIndexer extends AbstractStatIndexer {
 			"moreheat",	"moreluck", "moremagic", "nofmounts", "divinebeing", "falsedamagerecovery", "uwpathboost", "nofalldmg", "randomitems", "fireempower", 
 			"airempower", "waterempower", "earthempower", "popspy", "capitalhome", "deathslimeexpl", "deathpoisonexpl", "deathshockexpl", "drawsize", "clumsy", "petrificationimmune", 
 			"regainmount", "nobarding", "scarsouls", "spikebarbs", "pretenderstartsite", "mountiscom", "nothrowoff", "offscriptresearch", "bird", "decayres", 
-			"unmountedspr", "cubmother", "exhaustion", "glamour", "deadhp", "maxdeadhp", "verystupid", "deathdiseaseexpl", "end"}; 
+			"unmountedspr", "cubmother", "exhaustion", "glamour", "deadhp", "maxdeadhp", "verystupid", "deathdiseaseexpl",
+			"bravemount", "praise", "growthpower", "sleepres", "assencloc", "addupkeep", "deathgrab", "noremount", "noweapon", "labxpshape",
+			"icenatprot", "grandcom", "tolerateund", "faysummon", "3castbattlespell", "forcess", "command", "end"}; 
 			
 			
 	private static String values[][] = {{"heal", "mounted", "animal", "amphibian", "wastesurvival", "undead", "coldres15", "heat", "neednoteat", "fireres15", "poisonres15", "aquatic", "flying", "trample", "immobile", "immortal" },
@@ -103,6 +105,30 @@ public class MonsterStatIndexer extends AbstractStatIndexer {
 										{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }};
 	
 	private static String[][] KNOWN_MONSTER_ATTRS = {
+		{"0004", "bravemount"},
+		{"1A01", "praise"},
+		{"2701", "growthpower"},
+		{"4004", "sleepres"},
+		{"4704", "assencloc"},
+		{"4A04", "transformation"},
+		{"4D02", "addupkeep"},
+		{"4E04", "ainorec"},
+		{"5204", "commaster"},
+		{"5A04", "deathgrab"},
+		{"6404", "noremount"},
+		{"7004", "noweapon"},
+		{"7A04", "labxpshape"},
+		{"8504", "icenatprot"},
+		{"8804", "grandcom"},
+		{"8E04", "tolerateund"},
+		{"8F00", "summon5"},
+		{"8F04", "faysummon"},
+		{"9004", "3castbattlespell"},
+		{"9104", "forcess"},
+		{"9D00", "command"},
+		{"C601", "inspiringres"},
+		{"C701", "taxcollector"},
+		{"FD03", "mountgoldcost"},
 		{"F703", "mountmnr"},
 		{"4904", "skilledrider"},
 		{"F303", "truesight"},
@@ -692,12 +718,12 @@ public class MonsterStatIndexer extends AbstractStatIndexer {
 							monRandomMagic.link = value;
 							monRandomMagic.rand = 100;
 						} else if (path == 52) {
-							monRandomMagic.mask = 30720;
+							monRandomMagic.mask = 47104; // Sorcery: S D N B
 							monRandomMagic.nbr = 1;
 							monRandomMagic.link = value;
 							monRandomMagic.rand = 100;
 						} else if (path == 53) {
-							monRandomMagic.mask = 32640;
+							monRandomMagic.mask = 49024; // All: every path except Glamour
 							monRandomMagic.nbr = 1;
 							monRandomMagic.link = value;
 							monRandomMagic.rand = 100;
@@ -1032,6 +1058,10 @@ public class MonsterStatIndexer extends AbstractStatIndexer {
 					additionalLeader = monster.getAttribute("additional leadership").toString();
 				}
 				monster.addAttribute(new Attr("leader", 50+Integer.parseInt(additionalLeader)));
+				if (!"0".equals(additionalLeader) && !"".equals(additionalLeader)) {
+					// #command bonus on its own, "leader" above already includes it
+					monster.addAttribute(new Attr("leaderbonus", additionalLeader));
+				}
 				if (largeBitmap.contains("noleader")) {
 					if (!"".equals(additionalLeader)) {
 						monster.addAttribute(new Attr("leader", additionalLeader));

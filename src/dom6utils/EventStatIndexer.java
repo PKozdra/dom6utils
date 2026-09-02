@@ -187,6 +187,55 @@ public class EventStatIndexer extends AbstractStatIndexer {
 		{"5400", "noench"},
 		{"5600", "permonth"},
 		{"5a00", "enchdom"},
+		{"0601", "targseductions"},
+		{"1200", "nation"},
+		{"4700", "indepok"},
+		{"4B00", "nopathwater"},
+		{"5200", "nopathholy"},
+		{"5C00", "notcode"},
+		{"5F00", "enchtarget"},
+		{"6000", "unclaimedthronesite"},
+		{"6100", "mnr"},
+		{"6200", "2monsters"},
+		{"6300", "cataclysmturn"},
+		{"6500", "month"},
+		{"6600", "5monsters"},
+		{"6800", "notanycode"},
+		{"6900", "deadmnr"},
+		{"7200", "playerturn"},
+		{"7300", "unitrecruit"},
+		{"7500", "godalive"},
+		{"7600", "worldunitrare"},
+		{"7700", "godismnr"},
+		{"7F00", "ench"},
+		{"8000", "noench"},
+		{"8100", "maxturn"},
+		{"8500", "orpathearth"},
+		{"8900", "orpathglamour"},
+		{"8C00", "default"},
+		{"9600", "rare"},
+		{"9800", "luckrare"},
+		{"9900", "turnrare"},
+		{"9B00", "dominionrare"},
+		{"9C00", "voidok"},
+		{"9D00", "void"},
+		{"AD00", "forestcave"},
+		{"AF00", "drip"},
+		{"B000", "minglobals"},
+		{"BA00", "mnrbs"},
+		{"BB00", "monsterbs"},
+		{"E000", "targpath3"},
+		{"E300", "targhumanoid"},
+		{"E400", "targmale"},
+		{"E500", "targaff"},
+		{"E700", "targsneaking"},
+		{"E800", "targmanygems"},
+		{"E900", "targsight"},
+		{"EA00", "targundead"},
+		{"EB00", "targdemon"},
+		{"EF00", "targimmobile"},
+		{"F400", "targfreeitemslot"},
+		{"F600", "targmaxmorale"},
 
 	};
 	
@@ -249,7 +298,7 @@ public class EventStatIndexer extends AbstractStatIndexer {
 		{"2E00", "gemloss"}, 
 		{"2F00", "gemloss"}, 
 		{"3000", "gemloss"}, 
-		{"0300", "e3"}, 
+		{"0300", "assfollower1"},
 		{"3F00", "killmon"}, 
 		{"4400", "killcom"}, 
 		{"5300", "fireboost"}, 
@@ -301,6 +350,62 @@ public class EventStatIndexer extends AbstractStatIndexer {
 		{"7100", "notext"}, 
 		{"6A00", "pathboost"}, 
 		{"6C00", "gainaff"}, 
+		{"0400", "assfollower2"},
+		{"0600", "assfollower1d3"},
+		{"0700", "killpop"},
+		{"1400", "allvis"},
+		{"2700", "assassinationbattle"},
+		{"2A00", "gold"},
+		{"3100", "gemloss1d6"},
+		{"4200", "hiddensite"},
+		{"5E00", "code2"},
+		{"6B00", "flagland"},
+		{"6E00", "delay"},
+		{"6F00", "delay25"},
+		{"7000", "delay50"},
+		{"7300", "purgecalendar"},
+		{"7400", "purgedelayed"},
+		{"7500", "gainmark"},
+		{"7700", "tempunits"},
+		{"7900", "removesite"},
+		{"8000", "cleartarg"},
+		{"8100", "claimthrone"},
+		{"8200", "poison"},
+		{"8300", "addkills"},
+		{"8400", "kill2d6mon"},
+		{"8500", "arena"},
+		{"8600", "arena2"},
+		{"8700", "resolvearena1"},
+		{"8800", "resolvearena2"},
+		{"8900", "delayskip"},
+		{"8A00", "extramsg"},
+		{"8C00", "eventnation"},
+		{"8D00", "codedelay"},
+		{"8F00", "resetcodedelay"},
+		{"9000", "resetcodedelay2"},
+		{"9100", "worldstorm"},
+		{"9300", "setpoptype"},
+		{"9A00", "bodyguard"},
+		{"9B00", "1unit"},
+		{"9C00", "1d3units"},
+		{"9E00", "3d3units"},
+		{"9F00", "4d3units"},
+		{"A100", "2d6units"},
+		{"A300", "4d6units"},
+		{"A400", "5d6units"},
+		{"A600", "7d6units"},
+		{"A700", "8d6units"},
+		{"A900", "10d6units"},
+		{"AB00", "12d6units"},
+		{"B300", "20d6units"},
+		{"BF00", "globslots"},
+		{"C100", "nextchance"},
+		{"C200", "sinkprovince"},
+		{"C300", "addgeo"},
+		{"CA00", "maybeaddsite"},
+		{"D100", "addseductions"},
+		{"D500", "dispglobals"},
+		{"D700", "maybehiddensite"},
 
 	};
 	
@@ -377,7 +482,7 @@ public class EventStatIndexer extends AbstractStatIndexer {
 
 	private static String translateRequirements(String value) {
 		for (String[]pair : requirementMapping) {
-			if (pair[0].equals(value)) {
+			if (pair[0].equalsIgnoreCase(value)) {
 				return pair[1];
 			}
 		}
@@ -386,7 +491,7 @@ public class EventStatIndexer extends AbstractStatIndexer {
 	
 	private static String translateEffects(String value) {
 		for (String[]pair : effectMapping) {
-			if (pair[0].equals(value)) {
+			if (pair[0].equalsIgnoreCase(value)) {
 				return pair[1];
 			}
 		}
@@ -441,7 +546,7 @@ public class EventStatIndexer extends AbstractStatIndexer {
 
 	        List<Event> events = new ArrayList<Event>();
 
-			stream = new FileInputStream("Dominions6.exe");			
+			stream = new FileInputStream(EXE_NAME);			
 			stream.skip(Starts.EVENT);
 			long startIndex = Starts.EVENT;
 				
@@ -492,7 +597,7 @@ public class EventStatIndexer extends AbstractStatIndexer {
 				
 				events.add(event);
 
-				stream = new FileInputStream("Dominions6.exe");		
+				stream = new FileInputStream(EXE_NAME);		
 				startIndex = startIndex + Starts.EVENT_SIZE;
 				stream.skip(startIndex);
 				isr = new InputStreamReader(stream, "ISO-8859-1");

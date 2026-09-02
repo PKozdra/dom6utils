@@ -423,7 +423,12 @@ public class SiteStatIndexer extends AbstractStatIndexer {
 					site.parameters.put("n_sum4", summon.sum4count);
 				}
 
-				siteList.add(site);
+				// Rarity 6 is not a value the modding manual knows (0, 1, 2, 5, 11-13). Only
+				// the unused padding records carry it: "The Empty Slot" and the "..." slot.
+				// Skip them but keep counting so the ids stay right.
+				if (rarity != 6) {
+					siteList.add(site);
+				}
 
 				stream = new FileInputStream(EXE_NAME);		
 				startIndex = startIndex + Starts.SITE_SIZE;

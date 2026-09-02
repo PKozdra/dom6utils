@@ -30,7 +30,7 @@ public class NametypeIndexer {
 	public static void run() {
 		FileInputStream stream = null;
 		try {
-			stream = new FileInputStream("Dominions6.exe");
+			stream = new FileInputStream(AbstractStatIndexer.EXE_NAME);
 			
 			InputStreamReader isr = new InputStreamReader(stream, "ISO-8859-1");
 	        Reader in = new BufferedReader(isr);
@@ -61,7 +61,7 @@ public class NametypeIndexer {
 			
 			in.close();
 			
-			stream = new FileInputStream("Dominions6.exe");
+			stream = new FileInputStream(AbstractStatIndexer.EXE_NAME);
 			
 			isr = new InputStreamReader(stream, "ISO-8859-1");
 	        in = new BufferedReader(isr);

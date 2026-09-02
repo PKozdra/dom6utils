@@ -32,7 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class AbstractStatIndexer {
-	protected static String EXE_NAME = "Dominions6.exe";
+	protected static final String EXE_NAME = System.getenv().getOrDefault("DOM6_EXE", "Dominions6.exe");
 	
 	private static int MASK[] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080,
 			0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000, 0x8000};

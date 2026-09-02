@@ -82,7 +82,7 @@ public class ItemSpriteIndexer {
 				byte[] b = new byte[1];
 				while (stream.read(b) != -1) {
 					if (b[0] != 0) {
-						buffer.append(new String(new byte[] {b[0]}));
+						buffer.append(new String(new byte[] {b[0]}, java.nio.charset.StandardCharsets.ISO_8859_1));
 					} else {
 						break;
 					}
@@ -97,7 +97,7 @@ public class ItemSpriteIndexer {
 			}
 			
 			Map<String, List<String>> map = new HashMap<String, List<String>>();
-			stream = new FileInputStream("Dominions6.exe");
+			stream = new FileInputStream(AbstractStatIndexer.EXE_NAME);
 
 			byte[] b = new byte[32];
 			byte[] c = new byte[2];
@@ -112,7 +112,7 @@ public class ItemSpriteIndexer {
 				StringBuffer name = new StringBuffer();
 				for (int i = 0; i < 32; i++) {
 					if (b[i] != 0) {
-						name.append(new String(new byte[] {b[i]}));
+						name.append(new String(new byte[] {b[i]}, java.nio.charset.StandardCharsets.ISO_8859_1));
 					}
 				}
 				if (name.toString().equals("end")) {

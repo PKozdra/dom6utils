@@ -16,10 +16,12 @@ package dom6utils;
 */
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -64,7 +66,9 @@ public class CSVWriter {
 	
 	public static BufferedWriter getBFW (String basename, SSType ssType) throws IOException {
 		if (basename != null && !basename.isEmpty()) {
-			return new BufferedWriter(new FileWriter(CSVWriter.getFilePathWithExtension(basename, ssType)));
+			return new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(CSVWriter.getFilePathWithExtension(basename, ssType)),
+					StandardCharsets.ISO_8859_1));
 		}
 		return null;
 	}
@@ -81,7 +85,8 @@ public class CSVWriter {
 				columnsInWidestRow = Math.max(columnsInWidestRow, curRow.getLastCellNum());
 			}
 			
-			DataFormatter df = new DataFormatter(true);
+			// Locale-independent number rendering
+			DataFormatter df = new DataFormatter(Locale.US, true);
 			for (Row curRow : sheet) {
 				if (curRow != null) {
 					boolean firstColumn = true;
@@ -97,7 +102,7 @@ public class CSVWriter {
 						}
 						
 						if (curCell != null) {
-							writer.write(df.formatCellValue(curCell));
+							writer.write(utf8Safe(df.formatCellValue(curCell)));
 						}
 					}
 				}
@@ -107,6 +112,25 @@ public class CSVWriter {
 		}
 	}
 	
+	/**
+	 * Cell text arrives as one char per exe byte (every indexer reads the exe as
+	 * ISO-8859-1) and the CSV writer emits it as ISO-8859-1, so UTF-8 strings in the
+	 * exe round-trip byte for byte. A few strings (the fixed names) are stored as
+	 * Latin-1 in the exe; those would come out as invalid UTF-8, so we re-encode them.
+	 */
+	private static String utf8Safe(String s) {
+		byte[] raw = s.getBytes(StandardCharsets.ISO_8859_1);
+		try {
+			StandardCharsets.UTF_8.newDecoder()
+				.onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+				.onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)
+				.decode(java.nio.ByteBuffer.wrap(raw));
+			return s;
+		} catch (java.nio.charset.CharacterCodingException e) {
+			return new String(s.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+		}
+	}
+
 	private static char getDelimeterChar(Delimiter delim) {
 		switch (delim) {
 		case COMMA:

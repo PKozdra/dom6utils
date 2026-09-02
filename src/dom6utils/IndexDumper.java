@@ -41,7 +41,7 @@ public class IndexDumper {
 		
 		FileInputStream stream = null;
 		try {
-			stream = new FileInputStream("Dominions6.exe");
+			stream = new FileInputStream(AbstractStatIndexer.EXE_NAME);
 			stream.skip(Starts.ITEM_AND_MONSTER_DESC_INDEX);
 
 			List<Long> indexes = new ArrayList<Long>();
@@ -81,11 +81,11 @@ public class IndexDumper {
 			byte[] b = new byte[1];
 			for (Long offset : indexes) {
 				StringBuffer buffer = new StringBuffer();
-				stream = new FileInputStream("Dominions6.exe");
+				stream = new FileInputStream(AbstractStatIndexer.EXE_NAME);
 				stream.skip(offset-Starts.DESC_OFFSET);
 				while (stream.read(b) != -1) {
 					if (b[0] != 0) {
-						buffer.append(new String(new byte[] {b[0]}));
+						buffer.append(new String(new byte[] {b[0]}, java.nio.charset.StandardCharsets.ISO_8859_1));
 					} else {
 						break;
 					}
